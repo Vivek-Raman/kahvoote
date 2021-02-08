@@ -1,32 +1,58 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <nav>
+      <ul>
+        <router-link to="/" tag="li"><header>Kahvoote</header></router-link>
+        <router-link to="/" tag="li">Home</router-link>
+        <router-link to="/about" tag='li'>About</router-link>
+        <router-link to="/team" tag='li'>Team</router-link>
+      </ul>
+    </nav>
+    <div class="container">
+      <router-view />
     </div>
-    <router-view/>
   </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+html, body {
+  margin: 0px;
+  height: 100%;
 }
 
-#nav {
-  padding: 30px;
+#app {
+  font-family: 'Helvetica Neue', BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+.container {
+  flex-grow: 1;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+header {
+  font-weight: bold;
+}
+
+nav > ul {
+  list-style: none;
+  padding-inline-start: 0px;
+  margin: auto;
+  background-color: aliceblue;
+  display: flex;
+}
+
+nav > ul > li {
+  padding: 16px;
+}
+
+nav > ul > li:hover {
+  background-color: aquamarine;
+  transition-delay: 50ms;
+  transition-duration: 150ms;
+  cursor: pointer;
 }
 </style>

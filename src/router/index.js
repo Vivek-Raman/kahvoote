@@ -1,24 +1,26 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../pages/Home.vue'
-import About from '../pages/About.vue'
-import Team from '../pages/Team.vue'
 
 Vue.use(VueRouter)
 
+// https://github.com/Mrconfident/CRM/blob/master/src/router/index.js
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: () => import(/* webpackChunkName: "home" */ '../pages/Home.vue')
   }, {
     path: '/about',
     name: 'About',
-    component: About
+    component: () => import(/* webpackChunkName: "about" */ '../pages/About.vue')
   }, {
     path: '/team',
     name: 'Team',
-    component: Team
+    component: () => import(/* webpackChunkName: "team" */ '../pages/Team.vue')
+  }, {
+    path: '/room/new',
+    name: 'Room',
+    component: () => import(/* webpackChunkName: "room" */ '../pages/Room.vue')
   }
 ]
 

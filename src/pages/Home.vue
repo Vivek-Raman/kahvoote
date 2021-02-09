@@ -1,5 +1,6 @@
 <template>
   <div id="home">
+    <CreateRoom v-if="this.isCreateRoomModalUp" />
     <div class="onboarding">
       <div>Kahvoote!</div>
       <picture>
@@ -14,10 +15,10 @@
     <div class="actions">
       <div class="welcome-text">Welcome to Kahvoote!</div>
       <div class="sub-text">asd</div>
-      <div id="button-create-room">
+      <div id="button-create-room" class="button" @click="setCreateRoomModalVisibility(true)">
         Create Room
       </div>
-      <div id="button-join-room">
+      <div id="button-join-room" class="button">
         Join Room
       </div>
     </div>
@@ -25,8 +26,23 @@
 </template>
 
 <script>
+import CreateRoom from '../components/CreateRoom.vue'
+
 export default {
-  // if logged in, redirect
+  data () {
+    return {
+      isCreateRoomModalUp: false
+    }
+  },
+  methods: {
+    setCreateRoomModalVisibility (isVisible) {
+      this.isCreateRoomModalUp = isVisible
+      // this.$router.push('/room/new')
+    }
+  },
+  components: {
+    CreateRoom
+  }
 }
 </script>
 
@@ -38,14 +54,12 @@ export default {
     flex-direction: row;
     justify-content:space-evenly;
     align-items: center;
+    flex-wrap: wrap;
   }
 
   #home > div {
     margin: auto 0px;
-    max-width: 40vw;
-  }
-
-  .onboarding {
+    width: 45vw;
     border-radius: 16px;
     box-shadow: 0px 0px 8px -1px lightgrey;
   }
@@ -56,5 +70,22 @@ export default {
 
   .onboarding > picture > img {
     width: 100%;
+  }
+
+  .actions {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .actions > div {
+    margin: 4px;
+  }
+
+  .button {
+    border: 1px solid black;
+    padding: 4px;
+    cursor: pointer;
   }
 </style>

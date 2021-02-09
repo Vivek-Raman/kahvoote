@@ -29,6 +29,7 @@ html, body {
   flex-direction: column;
 }
 
+// container to cover remaining area of screen https://stackoverflow.com/a/28771764
 .container {
   flex-grow: 1;
 }
@@ -46,6 +47,7 @@ nav > ul {
 }
 
 nav > ul > li {
+  cursor: pointer;
   padding: 16px;
 }
 
@@ -53,6 +55,5 @@ nav > ul > li:hover {
   background-color: aquamarine;
   transition-delay: 50ms;
   transition-duration: 150ms;
-  cursor: pointer;
 }
 </style>

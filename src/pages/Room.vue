@@ -1,26 +1,38 @@
 <template>
   <div id="room">
-    <div id="history" class="box">
-      <div class="bigtext">
-        Your responses
+    <Modal v-if="this.isModalUp" :content="this.modalContent" />
+    <div class="flex">
+      <div id="history" class="box">
+        <div class="bigtext">
+          Your responses
+        </div>
+        <div class="item-container">
+          <VoteHistory v-for="item in this.history" :key="item.index" :statement='item.statement.statementContent' :response='item.myResponse.responseValue' />
+        </div>
       </div>
-      <div class="item-container">
-        <VoteHistory v-for="item in this.history" :key="item.index" :statement='item.statement' :response='item.response' />
+      <div id="voting-container" class="box">
+        <div id="active-statement">
+          <div class="bigtext">
+            Active Statement
+          </div>
+          <div class="statement">
+            {{ this.activeStatement }}
+          </div>
+          <button class="updateStatement" v-if="this.isAdmin" @click="updateStatement()">Update Statement</button>
+        </div>
       </div>
-    </div>
-    <div id="voting-container" class="box">
-      <div id="active-statement">
-        active statement
+      <div id="chat" class="box">
+        <div class="bigtext">
+          Chat
+        </div>
       </div>
-    </div>
-    <div id="chat" class="box">
-      chat
     </div>
   </div>
 </template>
 
 <script>
 import VoteHistory from '../components/VoteHistory.vue'
+import Modal from '../components/Modal.vue'
 
 export default {
   computed: {
@@ -30,55 +42,102 @@ export default {
   },
   data () {
     return {
-      history: {}
+      history: {},
+      activeStatement: '',
+      isAdmin: false
+    }
+  },
+  methods: {
+    setModal (content) {
+      //
     }
   },
   mounted () {
     // TODO: Integration
-    this.history = [
-      {
-        statement: 'What is love? Baby don\'t hurt me no more!',
-        response: 8
-      }, {
-        statement: 'What is love? Baby don\'t hurt me no more!',
-        response: 12
-      }, {
-        statement: 'What is love? Baby don\'t hurt me no more!',
-        response: 15
-      }, {
-        statement: 'What is love? Baby don\'t hurt me no more!',
-        response: 1
+    const response = {
+      status: 'OK',
+      data: {
+        room: {
+          roomID: 123,
+          roomName: 'Travel Team - Sprint 420',
+          password: 's3cret',
+          isActive: true
+        },
+        activeStatement: {
+          content: 'Ticket 3235: Discard all REST APIs and implement carrier pigeon'
+        },
+        history: [
+          {
+            statement: {
+              statementID: 41,
+              statementContent: 'Ticket 3234: Find a pigeon training school',
+              timestamp: 'forever',
+              roomID: 123
+            },
+            myResponse: {
+              responseID: 161,
+              statementID: 41,
+              guestID: 1,
+              responseValue: 18
+            }
+          }, {
+            statement: {
+              statementID: 40,
+              statementContent: 'Ticket 3233: Plant trees',
+              timestamp: 'a while ago',
+              roomID: 123
+            },
+            myResponse: {
+              responseID: 160,
+              statementID: 41,
+              guestID: 1,
+              responseValue: 12
+            }
+          }
+        ]
       }
-    ]
+    }
+
+    const isAdmin = true
+    this.isAdmin = isAdmin
+    this.activeStatement = response.data.activeStatement.content
+    this.history = response.data.history
   },
   components: {
-    VoteHistory
+    VoteHistory, Modal
   }
 }
 </script>
 
 <style lang="scss">
   #room {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     height: 98%;
     margin: min(8px, 1%) 8px;
   }
 
+  .flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .bigtext {
+    font-weight: bold;
+    font-size: larger;
+  }
+
   .box {
+    width: 25%;
+    min-width: 150px;
     margin: 0px 8px;
     padding: 16px;
     border-radius: 16px;
     box-shadow: 0px 0px 8px -1px lightgrey;
   }
 
-  #history {
-    width: 25%;
-    min-width: 150px;
-  }
-
   #voting-container {
     flex-grow: 1;
+    min-width: 350px;
   }
 </style>

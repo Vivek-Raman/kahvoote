@@ -1,10 +1,9 @@
 <template>
-  <span id="create-room" class="modal">
+  <span id="modal" class="modal">
     <div class="modal-overlay" @click="removeModal()"></div>
     <div class="modal-content">
-      <div class="title">
-        Create a New Room
-      </div>
+        <CreateRoom v-if="this.$props.content === 'CreateRoom'" />
+        <JoinRoom v-if="this.$props.content === 'JoinRoom'" />
       <form action="" method="post">
       </form>
     </div>
@@ -28,21 +27,28 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    position: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 
     z-index: 1010;
-    padding: 16px;
-    border: 2px solid aquamarine;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px -1px black;
     background-color: white;
-    transition-duration: 150ms;
   }
 </style>
 
 <script>
+import CreateRoom from './modals/CreateRoom.vue'
+import JoinRoom from './modals/JoinRoom.vue'
+
 export default {
+  components: {
+    CreateRoom, JoinRoom
+  },
+  props: ['content'],
   methods: {
     removeModal () {
-      this.$parent.setCreateRoomModalVisibility(false)
+      this.$parent.setModal('')
     }
   }
 }

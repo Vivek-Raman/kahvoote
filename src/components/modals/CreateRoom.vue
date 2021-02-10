@@ -3,7 +3,7 @@
     <div class="title">
       Create a New Room
     </div>
-    <form action="" method="post">
+    <form action="/create" method="post">
       <div class="input">
         <label for="roomName">Room Name</label>
         <input type="text" name="roomName" id="create-room--roomName" placeholder="Monstrous Moonshine" />

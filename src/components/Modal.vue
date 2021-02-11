@@ -5,6 +5,7 @@
         <CreateRoom v-if="this.$props.content === 'CreateRoom'" />
         <JoinRoom v-if="this.$props.content === 'JoinRoom'" />
         <UpdateStatement v-if="this.$props.content === 'UpdateStatement'" />
+        <AddResponse v-if="this.$props.content === 'AddResponse'" />
       <form action="" method="post">
       </form>
     </div>
@@ -42,10 +43,11 @@
 import CreateRoom from './modals/CreateRoom.vue'
 import JoinRoom from './modals/JoinRoom.vue'
 import UpdateStatement from './modals/UpdateStatement.vue'
+import AddResponse from './modals/AddResponse.vue'
 
 export default {
   components: {
-    CreateRoom, JoinRoom, UpdateStatement
+    CreateRoom, JoinRoom, UpdateStatement, AddResponse
   },
   props: ['content'],
   methods: {

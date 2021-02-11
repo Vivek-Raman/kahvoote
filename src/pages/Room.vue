@@ -2,15 +2,22 @@
   <div id="room">
     <Modal v-if="this.isModalUp" :content="this.modalContent" />
     <div class="flex">
+
       <div id="history" class="box">
         <div class="bigtext">
           Your responses
         </div>
         <div class="item-container">
-          <VoteHistory v-for="item in this.history" :key="item.index" :statement='item.statement.statementContent' :response='item.myResponse.responseValue' />
+          <VoteHistory
+            v-for="item in this.history"
+            :key="item.index"
+            :statement='item.statement.statementContent'
+            :response='item.myResponse.responseValue' />
         </div>
       </div>
+
       <div id="voting-container" class="box">
+
         <div id="active-statement">
           <div class="bigtext">
             Active Statement
@@ -18,10 +25,14 @@
           <div class="statement">
             {{ this.activeStatement }}
           </div>
-          <button class="updateStatement" v-if="this.isAdmin" @click="setModal('UpdateStatement')">Update Statement</button>
+          <button v-if="this.isAdmin" @click="setModal('UpdateStatement')">Update Statement</button>
         </div>
-        <GuestList roomID='getRoomID' />
+
+        <button @click="setModal('AddResponse')">Add Response</button>
+
+        <GuestList roomID='getRoomID' :viewAsAdmin='this.isAdmin' />
       </div>
+
       <div id="chat" class="box">
         <div class="bigtext">
           Chat
@@ -110,6 +121,7 @@ export default {
     }
 
     const isAdmin = true
+
     this.isAdmin = isAdmin
     this.activeStatement = response.data.activeStatement.content
     this.history = response.data.history

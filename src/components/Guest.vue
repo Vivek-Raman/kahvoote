@@ -19,14 +19,18 @@ export default {
   },
   methods: {
     reloadResponseStatus () {
-      if (this.$props.response === 0 || this.$props.response === null) {
+      if (this.$props.response === -1 || this.$props.response === null) {
         this.$el.getElementsByClassName('guest-response')[0].classList.remove('has-responded')
       } else {
         this.$el.getElementsByClassName('guest-response')[0].classList.add('has-responded')
       }
+
+      if (!this.$props.viewAsAdmin) {
+        this.$el.getElementsByClassName('admin-only')[0].classList.add('hidden')
+      }
     }
   },
-  props: ['photoUrl', 'name', 'response']
+  props: ['photoUrl', 'name', 'response', 'viewAsAdmin']
 }
 </script>
 
@@ -58,5 +62,9 @@ export default {
   img {
     width: 48px;
     height: 48px;
+  }
+
+  .hidden {
+    display: none;
   }
 </style>

@@ -10,7 +10,8 @@
         :uniqueID='guest.index'
         :name='guest.name'
         :response='guest.response'
-        :photoUrl='guest.photoUrl' />
+        :photoUrl='guest.photoUrl'
+        :viewAsAdmin='$props.viewAsAdmin' />
     </table>
   </div>
 </template>
@@ -24,10 +25,10 @@ export default {
   },
   data () {
     return {
-      guests: [],
-      isAdmin: false
+      guests: []
     }
   },
+  props: ['viewAsAdmin'],
   mounted () {
     // TODO: Integration
     const response = [

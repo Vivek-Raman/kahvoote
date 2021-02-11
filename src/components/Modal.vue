@@ -4,6 +4,7 @@
     <div class="modal-content">
         <CreateRoom v-if="this.$props.content === 'CreateRoom'" />
         <JoinRoom v-if="this.$props.content === 'JoinRoom'" />
+        <UpdateStatement v-if="this.$props.content === 'UpdateStatement'" />
       <form action="" method="post">
       </form>
     </div>
@@ -40,10 +41,11 @@
 <script>
 import CreateRoom from './modals/CreateRoom.vue'
 import JoinRoom from './modals/JoinRoom.vue'
+import UpdateStatement from './modals/UpdateStatement.vue'
 
 export default {
   components: {
-    CreateRoom, JoinRoom
+    CreateRoom, JoinRoom, UpdateStatement
   },
   props: ['content'],
   methods: {

@@ -18,8 +18,9 @@
           <div class="statement">
             {{ this.activeStatement }}
           </div>
-          <button class="updateStatement" v-if="this.isAdmin" @click="updateStatement()">Update Statement</button>
+          <button class="updateStatement" v-if="this.isAdmin" @click="setModal('UpdateStatement')">Update Statement</button>
         </div>
+        <GuestList roomID='getRoomID' />
       </div>
       <div id="chat" class="box">
         <div class="bigtext">
@@ -33,6 +34,7 @@
 <script>
 import VoteHistory from '../components/VoteHistory.vue'
 import Modal from '../components/Modal.vue'
+import GuestList from '../components/GuestList.vue'
 
 export default {
   computed: {
@@ -42,6 +44,9 @@ export default {
   },
   data () {
     return {
+      isModalUp: false,
+      modalContent: '',
+
       history: {},
       activeStatement: '',
       isAdmin: false
@@ -49,7 +54,13 @@ export default {
   },
   methods: {
     setModal (content) {
-      //
+      if (content === '' || content === null) {
+        this.isModalUp = false
+        return
+      }
+
+      this.modalContent = content
+      this.isModalUp = true
     }
   },
   mounted () {
@@ -104,7 +115,7 @@ export default {
     this.history = response.data.history
   },
   components: {
-    VoteHistory, Modal
+    VoteHistory, Modal, GuestList
   }
 }
 </script>

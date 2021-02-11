@@ -17,6 +17,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  // TODO: Integration
+}
+</script>
+
 <style lang="scss">
   form {
     display: flex;

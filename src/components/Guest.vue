@@ -36,17 +36,16 @@ export default {
 
 <style lang="scss">
   .guest-response {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     background-color: rgb(209, 132, 132);
     box-shadow: 0px 0px 8px -2px rgb(209, 132, 132);
-    border-radius: 14px;
+    border-radius: 16px;
     margin: auto;
-  }
 
-  .guest-response > div {
-    // TODO: center div in parent
-    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .guest-response.has-responded {

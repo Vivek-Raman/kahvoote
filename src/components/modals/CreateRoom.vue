@@ -3,23 +3,43 @@
     <div class="title">
       Create a New Room
     </div>
-    <form action="/create" method="post">
-      <div class="input">
-        <label for="roomName">Room Name</label>
-        <input type="text" name="roomName" id="create-room--roomName" placeholder="Monstrous Moonshine" />
-      </div>
-      <div class="input">
-        <label for="roomPassword">Password</label>
-        <input type="password" name="roomPassword" id="create-room--roomPassword" placeholder="******" />
-      </div>
-      <button type="submit">Create</button>
-    </form>
+    <div class="input">
+      <label for="roomName">Room Name</label>
+      <input type="text" name="roomName" id="create-room--roomName" placeholder="Monstrous Moonshine" />
+    </div>
+    <div class="input">
+      <label for="roomPassword">Password</label>
+      <input type="password" name="roomPassword" id="create-room--roomPassword" placeholder="******" />
+    </div>
+    <button @click="createRoom()">Create</button>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import api from '../../config/api.js'
+
 export default {
-  // TODO: Integration
+  // TODO: Integration (/room/addRoom)
+  methods: {
+    createRoom () {
+      axios({
+        method: 'POST',
+        url: api.BASE_URL + '/room/addRoom',
+        data: {
+          roomName: 'Room1',
+          password: 'password',
+          roomDescription: 'asdasd'
+        }
+      })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }
 }
 </script>
 

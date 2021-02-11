@@ -1,53 +1,65 @@
 <template>
   <div id="home">
-    <CreateRoom v-if="this.isCreateRoomModalUp" />
-    <div class="onboarding">
-      <div>Kahvoote!</div>
-      <picture>
-        <source media="(max-width: 580px)" srcset="../assets/lowres/cat.jpeg">
-        <source media="(min-width: 581px)" srcset="../assets/hires/catbig.png">
-        <img src="" alt="Cat">
-      </picture>
-      <div>
-        You need to vote on stuff. This is important. The cat demands that you vote responsibly. Tickets need to be completed, duties delegated, progress to be made. Cat is watching. Get to work.
+    <Modal v-if="this.isModalUp" :content="this.modalContent" />
+    <div class="split-page">
+      <div class="onboarding">
+        <div>Kahvoote!</div>
+        <picture>
+          <source media="(max-width: 580px)" srcset="../assets/lowres/cat.jpeg">
+          <source media="(min-width: 581px)" srcset="../assets/hires/catbig.png">
+          <img src="" alt="Cat">
+        </picture>
+        <div>
+          You need to vote on stuff. This is important. The cat demands that you vote responsibly. Tickets need to be completed, duties delegated, progress to be made. Cat is watching. Get to work.
+        </div>
       </div>
-    </div>
-    <div class="actions">
-      <div class="welcome-text">Welcome to Kahvoote!</div>
-      <div class="sub-text">asd</div>
-      <div id="button-create-room" class="button" @click="setCreateRoomModalVisibility(true)">
-        Create Room
-      </div>
-      <div id="button-join-room" class="button">
-        Join Room
+      <div class="actions">
+        <div class="welcome-text">Welcome to Kahvoote!</div>
+        <div class="sub-text">asd</div>
+        <div id="button-create-room" class="button" @click="setModal('CreateRoom')">
+          Create Room
+        </div>
+        <div id="button-join-room" class="button" @click="setModal('JoinRoom')">
+          Join Room
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import CreateRoom from '../components/CreateRoom.vue'
+import Modal from '../components/Modal.vue'
 
 export default {
   data () {
     return {
-      isCreateRoomModalUp: false
+      isModalUp: false,
+      modalContent: ''
     }
   },
   methods: {
-    setCreateRoomModalVisibility (isVisible) {
-      this.isCreateRoomModalUp = isVisible
+    setModal (content) {
+      if (content === '' || content === null) {
+        this.isModalUp = false
+        return
+      }
+      this.modalContent = content
+      this.isModalUp = true
       // this.$router.push('/room/new')
     }
   },
   components: {
-    CreateRoom
+    Modal
   }
 }
 </script>
 
 <style lang="scss">
   #home {
+    height: 100%;
+  }
+
+  .split-page {
     height: 100%;
     margin: auto;
     display: flex;
@@ -57,7 +69,7 @@ export default {
     flex-wrap: wrap;
   }
 
-  #home > div {
+  .split-page > div {
     margin: auto 0px;
     width: 45vw;
     border-radius: 16px;

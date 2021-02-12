@@ -11,26 +11,29 @@
           <VoteHistory
             v-for="item in this.history"
             :key="item.index"
-            :statement='item.statement.statementContent'
-            :response='item.myResponse.responseValue' />
+            :statement='item.statementContent'
+            :average='item.average' />
         </div>
       </div>
 
       <div id="voting-container" class="box">
-
+        <div class="bigtext">
+          {{ this.roomName }}
+        </div>
+        <div>
+          <em>{{ this.roomDescription }}</em>
+        </div>
         <div id="active-statement">
-          <div class="bigtext">
-            Active Statement
-          </div>
           <div class="statement">
-            {{ this.activeStatement }}
+            {{ this.activeStatement.statementContent }}
           </div>
-          <button v-if="this.isAdmin" @click="setModal('UpdateStatement')">Update Statement</button>
+          <button v-if="this.isAdmin()" @click="setModal('UpdateStatement')">Update Statement</button>
         </div>
 
         <button @click="setModal('AddResponse')">Add Response</button>
+        <!-- TODO: leave room (guest) / end room (admin) -->
 
-        <GuestList roomID='getRoomID' :viewAsAdmin='this.isAdmin' />
+        <GuestList roomID='roomID' :viewAsAdmin='this.isAdmin()' />
       </div>
 
       <div id="chat" class="box">
@@ -46,21 +49,22 @@
 import VoteHistory from '../components/VoteHistory.vue'
 import Modal from '../components/Modal.vue'
 import GuestList from '../components/GuestList.vue'
+import { mapGetters } from 'vuex'
+import axios from 'axios'
+import api from '../config/api.js'
 
 export default {
-  computed: {
-    getRoomID () {
-      return this.$route.params.roomID
-    }
-  },
   data () {
     return {
       isModalUp: false,
       modalContent: '',
 
-      history: {},
-      activeStatement: '',
-      isAdmin: false
+      roomName: '',
+      roomDescription: '',
+
+      statements: [],
+      activeStatement: {},
+      history: []
     }
   },
   methods: {
@@ -72,11 +76,48 @@ export default {
 
       this.modalContent = content
       this.isModalUp = true
-    }
+    },
+    ...mapGetters([
+      'roomID',
+      'guestID',
+      'isAdmin'
+    ])
   },
   mounted () {
-    // TODO: redirect if guestID doesn't exist
+    // TODO: redirect if store values don't exist
+    console.log({ roomID: this.roomID(), guestID: this.guestID(), isAdmin: this.isAdmin() })
+
     // TODO: Integration
+    // get room info
+    axios({
+      method: 'GET',
+      url: api.BASE_URL + '/room/getRoom/' + this.roomID()
+    })
+      .then((response) => {
+        console.log({ url: response.config.url, status: response.status, data: response.data })
+
+        this.roomName = response.data.roomName
+        this.roomDescription = response.data.roomDescription
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+
+    // get statements info
+    axios({
+      method: 'GET',
+      url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
+    })
+      .then((response) => {
+        console.log({ url: response.config.url, status: response.status, data: response.data })
+
+        this.activeStatement = response.data[0]
+        this.history = response.data.slice(1)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+
     const response = {
       status: 'OK',
       data: {
@@ -121,11 +162,8 @@ export default {
       }
     }
 
-    const isAdmin = true
-
-    this.isAdmin = isAdmin
     this.activeStatement = response.data.activeStatement.content
-    this.history = response.data.history
+    // this.history = response.data.history
   },
   components: {
     VoteHistory, Modal, GuestList

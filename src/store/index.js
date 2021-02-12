@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+// TODO: Session data to persist reloads https://github.com/robinvdvleuten/vuex-persistedstate
 export default new Vuex.Store({
   state: {
     guestID: '',

@@ -61,27 +61,57 @@ export default {
         return
       }
 
-      axios({
-        method: 'POST',
-        url: api.BASE_URL + '/guest/addGuest',
-        data: {
-          admin: this.isJoiningAsAdmin,
-          guestName: userName,
-          roomId: roomID,
-          password: password
-        }
-      })
-        .then((response) => {
-          console.log({ status: response.status, data: response.data })
+      if (this.isJoiningAsAdmin) {
+        axios({
+          method: 'POST',
+          url: api.BASE_URL + '/guest/addGuestAsAdmin',
+          data: {
+            admin: this.isJoiningAsAdmin,
+            guestName: userName,
+            roomId: roomID,
+            password: password
+          }
+        })
+          .then((response) => {
+            if (response.data === '') {
+              // unauthorized
+              alert('Please enter the correct password.')
+              return
+            }
 
-          this.setGuestID(response.data.guestId)
-          this.setRoomID(response.data.room.roomId)
-          this.setIsAdmin(response.data.admin)
-          this.$router.push('/room/' + roomID)
+            // console.log({ url: response.config.url, status: response.status, data: response.data })
+
+            this.setGuestID(response.data.guestId)
+            this.setRoomID(response.data.room.roomId)
+            this.setIsAdmin(response.data.admin)
+            this.$router.push('/room/' + roomID)
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      } else {
+        axios({
+          method: 'POST',
+          url: api.BASE_URL + '/guest/addGuest',
+          data: {
+            admin: this.isJoiningAsAdmin,
+            guestName: userName,
+            roomId: roomID,
+            password: password
+          }
         })
-        .catch((error) => {
-          console.error(error)
-        })
+          .then((response) => {
+            // console.log({ url: response.config.url, status: response.status, data: response.data })
+
+            this.setGuestID(response.data.guestId)
+            this.setRoomID(response.data.room.roomId)
+            this.setIsAdmin(response.data.admin)
+            this.$router.push('/room/' + roomID)
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      }
     },
     ...mapActions({
       setRoomID: 'setRoomID', setGuestID: 'setGuestID', setIsAdmin: 'setIsAdmin'

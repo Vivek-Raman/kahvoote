@@ -4,15 +4,15 @@
     <div class="statement">
       {{ this.$props.statement }}
     </div>
-    <div class="response">
-      <strong>Your response:</strong> <em>{{ this.$props.response }}</em>
+    <div class="average">
+      <strong>Average:</strong> <em>{{ this.$props.average }}</em>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['statement', 'response']
+  props: ['statement', 'average']
 }
 </script>
 

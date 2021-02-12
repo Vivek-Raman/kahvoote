@@ -1,6 +1,6 @@
 <template>
   <div id="create-room">
-    <div class="title">
+    <div class="bigtext">
       Create a New Room
     </div>
     <div class="input">
@@ -20,7 +20,6 @@ import axios from 'axios'
 import api from '../../config/api.js'
 
 export default {
-  // TODO: Integration (/room/addRoom)
   methods: {
     createRoom () {
       const roomName = document.getElementById('create-room--roomName').value

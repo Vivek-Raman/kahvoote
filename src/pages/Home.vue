@@ -59,6 +59,11 @@ export default {
     height: 100%;
   }
 
+  .bigtext {
+    font-weight: bold;
+    font-size: larger;
+  }
+
   .split-page {
     height: 100%;
     margin: auto;

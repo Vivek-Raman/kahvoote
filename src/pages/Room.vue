@@ -75,6 +75,7 @@ export default {
     }
   },
   mounted () {
+    // TODO: redirect if guestID doesn't exist
     // TODO: Integration
     const response = {
       status: 'OK',

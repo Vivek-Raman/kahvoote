@@ -4,17 +4,15 @@
       <div class="title">
         Join an Existing Room
       </div>
-      <!-- <form @submit="this.joinRoom()" method="POST"> -->
-        <div class="input">
-          <label for="roomName">Room Name</label>
-          <input type="text" name="roomName" id="create-room--roomName" placeholder="Monstrous Moonshine" />
-        </div>
-        <div class="input">
-          <label for="roomPassword">Password</label>
-          <input type="password" name="roomPassword" id="create-room--roomPassword" placeholder="******" />
-        </div>
-        <button @click="joinRoom()">Join</button>
-      <!-- </form> -->
+      <div class="input">
+        <label for="roomID">Room ID</label>
+        <input type="text" name="roomID" id="create-room--roomID" placeholder="123-456" />
+      </div>
+      <div class="input">
+        <label for="roomPassword">Password</label>
+        <input type="password" name="roomPassword" id="create-room--roomPassword" placeholder="******" />
+      </div>
+      <button @click="joinRoom()">Join</button>
     </div>
   </div>
 </template>
@@ -23,18 +21,18 @@
 export default {
   methods: {
     joinRoom () {
-      const roomName = document.getElementById('create-room--roomName').value
+      const roomID = document.getElementById('create-room--roomID').value
       const password = document.getElementById('create-room--roomPassword').value
-      if (roomName === '') {
+      if (roomID === '') {
         return
       }
 
       // TODO: Integration
-      if (roomName === 'test' && password === '123') {
+      if (roomID === 'test' && password === '123') {
         const roomID = '001'
         this.$router.push('/room/' + roomID)
       } else {
-        console.log('Room not found: ' + roomName)
+        console.log('Room not found: ' + roomID)
       }
     }
   }

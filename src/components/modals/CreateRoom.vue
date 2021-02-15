@@ -1,6 +1,6 @@
 <template>
   <div id="create-room">
-    <div class="title">
+    <div class="bigtext">
       Create a New Room
     </div>
     <div class="input">
@@ -20,20 +20,22 @@ import axios from 'axios'
 import api from '../../config/api.js'
 
 export default {
-  // TODO: Integration (/room/addRoom)
   methods: {
     createRoom () {
+      const roomName = document.getElementById('create-room--roomName').value
+      const roomPassword = document.getElementById('create-room--roomPassword').value
+
       axios({
         method: 'POST',
         url: api.BASE_URL + '/room/addRoom',
         data: {
-          roomName: 'Room1',
-          password: 'password',
-          roomDescription: 'asdasd'
+          roomName: roomName,
+          password: roomPassword,
+          roomDescription: 'This is a room!'
         }
       })
         .then((response) => {
-          console.log(response)
+          this.$router.push('/room/' + response.data.roomId + '/info')
         })
         .catch((error) => {
           console.log(error)

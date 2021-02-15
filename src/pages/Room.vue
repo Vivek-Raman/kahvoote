@@ -2,7 +2,6 @@
   <div id="room">
     <Modal v-if="this.isModalUp" :content="this.modalContent" />
     <div class="flex">
-
       <div id="history" class="box">
         <div class="bigtext">
           Your responses
@@ -11,29 +10,34 @@
           <VoteHistory
             v-for="item in this.history"
             :key="item.index"
-            :statement='item.statement.statementContent'
-            :response='item.myResponse.responseValue' />
+            :statement='item.statementContent'
+            :average='item.average' />
         </div>
       </div>
 
       <div id="voting-container" class="box">
-
+        <div class="bigtext">
+          {{ this.roomName }}
+        </div>
+        <div>
+          <em>{{ this.roomDescription }}</em>
+        </div>
         <div id="active-statement">
-          <div class="bigtext">
-            Active Statement
-          </div>
           <div class="statement">
-            {{ this.activeStatement }}
+            {{ this.activeStatement.statementContent }}
           </div>
-          <button v-if="this.isAdmin" @click="setModal('UpdateStatement')">Update Statement</button>
+          <button v-if="this.isAdmin()" @click="setModal('UpdateStatement')">Update Statement</button>
         </div>
 
         <button @click="setModal('AddResponse')">Add Response</button>
+        <!-- TODO: leave room (guest) / end room (admin) -->
 
-        <GuestList roomID='getRoomID' :viewAsAdmin='this.isAdmin' />
+        <GuestList
+          :statementID='this.activeStatement.statementId'
+          :viewAsAdmin='this.isAdmin()' />
       </div>
 
-      <div id="chat" class="box">
+      <div id="right-panel" class="box">
         <div class="bigtext">
           Chat
         </div>
@@ -46,21 +50,24 @@
 import VoteHistory from '../components/VoteHistory.vue'
 import Modal from '../components/Modal.vue'
 import GuestList from '../components/GuestList.vue'
+import { mapGetters } from 'vuex'
+import axios from 'axios'
+import api from '../config/api.js'
 
 export default {
-  computed: {
-    getRoomID () {
-      return this.$route.params.roomID
-    }
-  },
   data () {
     return {
       isModalUp: false,
       modalContent: '',
 
-      history: {},
-      activeStatement: '',
-      isAdmin: false
+      roomName: '',
+      roomDescription: '',
+
+      statements: [],
+      activeStatement: {},
+      history: [],
+
+      setIntervalIDs: []
     }
   },
   methods: {
@@ -72,59 +79,94 @@ export default {
 
       this.modalContent = content
       this.isModalUp = true
-    }
+    },
+    updateStatement (newStatement) {
+      axios({
+        method: 'POST',
+        url: api.BASE_URL + '/statement/addStatement',
+        data: {
+          roomId: this.roomID(),
+          statementContent: newStatement
+        }
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    submitMyResponse (myResponse) {
+      axios({
+        method: 'POST',
+        url: api.BASE_URL + '/responses/addResponses',
+        data: {
+          guestId: this.guestID(),
+          responseValue: myResponse,
+          statementId: this.activeStatement.statementId
+        }
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    ...mapGetters([
+      'roomID',
+      'guestID',
+      'isAdmin'
+    ])
   },
   mounted () {
-    // TODO: Integration
-    const response = {
-      status: 'OK',
-      data: {
-        room: {
-          roomID: 123,
-          roomName: 'Travel Team - Sprint 420',
-          password: 's3cret',
-          isActive: true
-        },
-        activeStatement: {
-          content: 'Ticket 3235: Discard all REST APIs and implement carrier pigeon'
-        },
-        history: [
-          {
-            statement: {
-              statementID: 41,
-              statementContent: 'Ticket 3234: Find a pigeon training school',
-              timestamp: 'forever',
-              roomID: 123
-            },
-            myResponse: {
-              responseID: 161,
-              statementID: 41,
-              guestID: 1,
-              responseValue: 18
-            }
-          }, {
-            statement: {
-              statementID: 40,
-              statementContent: 'Ticket 3233: Plant trees',
-              timestamp: 'a while ago',
-              roomID: 123
-            },
-            myResponse: {
-              responseID: 160,
-              statementID: 41,
-              guestID: 1,
-              responseValue: 12
-            }
-          }
-        ]
-      }
+    // TODO: redirect if store values don't exist
+    if (this.roomID() === '' || this.guestID() === '') {
+      console.error('Invalid state: Join through Home page')
+      this.$router.push('/?err=invalidstate')
+      return
     }
 
-    const isAdmin = true
+    // get room info
+    axios({
+      method: 'GET',
+      url: api.BASE_URL + '/room/getRoom/' + this.roomID()
+    })
+      .then((response) => {
+        console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
 
-    this.isAdmin = isAdmin
-    this.activeStatement = response.data.activeStatement.content
-    this.history = response.data.history
+        this.roomName = response.data.roomName
+        this.roomDescription = response.data.roomDescription
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+
+    // get statements info
+    this.setIntervalIDs.push(setInterval(() => {
+      axios({
+        method: 'GET',
+        url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+
+          if (response.data.length <= 0) {
+            return
+          }
+
+          this.activeStatement = response.data[0]
+          this.history = response.data.slice(1)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }, 5000))
+  },
+  beforeDestroy () {
+    for (var i = 0; i < this.setIntervalIDs.length; ++i) {
+      clearInterval(this.setIntervalIDs[i])
+    }
   },
   components: {
     VoteHistory, Modal, GuestList

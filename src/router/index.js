@@ -21,6 +21,10 @@ const routes = [
     path: '/room/:roomID',
     name: 'Room',
     component: () => import(/* webpackChunkName: "room" */ '../pages/Room.vue')
+  }, {
+    path: '/room/:roomID/info',
+    name: 'Room Info',
+    component: () => import(/* webpackChunkName: "room" */ '../pages/RoomInfo.vue')
   }
 ]
 

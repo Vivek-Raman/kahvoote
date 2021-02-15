@@ -3,7 +3,7 @@
     <Modal v-if="this.isModalUp" :content="this.modalContent" />
     <div class="split-page">
       <div class="onboarding">
-        <div>Kahvoote!</div>
+        <div class="bigtext">Kahvoote!</div>
         <picture>
           <source media="(max-width: 580px)" srcset="../assets/lowres/cat.jpeg">
           <source media="(min-width: 581px)" srcset="../assets/hires/catbig.png">
@@ -14,8 +14,8 @@
         </div>
       </div>
       <div class="actions">
-        <div class="welcome-text">Welcome to Kahvoote!</div>
-        <div class="sub-text">asd</div>
+        <div class="bigtext">Welcome to Kahvoote!</div>
+        <div class="sub-text">Your smart voting portal, made by Akshay, Shreeyansh, and Vivek</div>
         <div id="button-create-room" class="button" @click="setModal('CreateRoom')">
           Create Room
         </div>
@@ -57,6 +57,16 @@ export default {
 <style lang="scss">
   #home {
     height: 100%;
+  }
+
+  .bigtext {
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  .sub-text {
+    font-size: smaller;
+    color: grey;
   }
 
   .split-page {

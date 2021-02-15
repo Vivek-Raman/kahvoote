@@ -3,34 +3,51 @@
     <td class="guest-avatar">
       <img :src='this.$props.photoUrl' alt='-avatar-'>
     </td>
-    <td>{{ this.$props.name }}</td>
+    <td>
+      {{ this.$props.name }}
+      <AdminIndicator :isAdmin="this.$props.isAdmin" />
+    </td>
     <td>
       <div class="guest-response">
-        <div class="admin-only">{{ this.$props.response }}</div>
+        <div class="response-value">{{ this.$props.response }}</div>
       </div>
     </td>
   </tr>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import AdminIndicator from './AdminIndicator.vue'
 export default {
-  mounted () {
+  components: { AdminIndicator },
+  data () {
+    return {
+      setIntervalIDs: []
+    }
+  },
+  updated () {
     this.reloadResponseStatus()
   },
   methods: {
     reloadResponseStatus () {
-      if (this.$props.response === -1 || this.$props.response === null) {
+      // handles colour of circle
+      if (this.$props.response === 0 || this.$props.response === null) {
         this.$el.getElementsByClassName('guest-response')[0].classList.remove('has-responded')
       } else {
         this.$el.getElementsByClassName('guest-response')[0].classList.add('has-responded')
       }
 
-      if (!this.$props.viewAsAdmin) {
-        this.$el.getElementsByClassName('admin-only')[0].classList.add('hidden')
+      // shows response value if self
+      if (this.$props.isMyResponse) {
+        this.$el.getElementsByClassName('response-value')[0].classList.remove('hidden')
+      } else if (!this.$props.viewAsAdmin) {
+        // hides response values if not admin
+        this.$el.getElementsByClassName('response-value')[0].classList.add('hidden')
       }
-    }
+    },
+    ...mapGetters(['guestID'])
   },
-  props: ['photoUrl', 'name', 'response', 'viewAsAdmin']
+  props: ['photoUrl', 'responseGuestID', 'name', 'response', 'isAdmin', 'viewAsAdmin']
 }
 </script>
 
@@ -58,9 +75,11 @@ export default {
     text-anchor: middle;
   }
 
-  img {
+  .guest-avatar > img {
     width: 48px;
     height: 48px;
+    border-radius: 24px;
+    box-shadow: 0px 0px 8px -1px lightgrey;
   }
 
   .hidden {

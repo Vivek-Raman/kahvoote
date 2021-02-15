@@ -6,18 +6,21 @@
         <th>Response</th>
       </tr>
       <Guest v-for='guest in this.guests'
+        :responseGuestID='guest.guestId'
         :key='guest.index'
-        :uniqueID='guest.index'
-        :name='guest.name'
-        :response='guest.response'
+        :name='guest.guestName'
+        :response='guest.responseValue'
         :photoUrl='guest.photoUrl'
+        :isAdmin='guest.admin'
         :viewAsAdmin='$props.viewAsAdmin' />
     </table>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import Guest from './Guest.vue'
+import api from '../config/api'
 
 export default {
   components: {
@@ -25,41 +28,34 @@ export default {
   },
   data () {
     return {
+      setIntervalIDs: [],
       guests: []
     }
   },
-  props: ['viewAsAdmin'],
+  props: ['viewAsAdmin', 'statementID'],
   mounted () {
-    // TODO: Integration
-    const response = [
-      {
-        roomId: '001',
-        guestName: 'Vivek Raman',
-        isAdmin: false,
-        photoUrl: 'https://i.imgur.com/9pNffkj.png',
-        response: 18
-      }, {
-        roomId: '001',
-        guestName: 'Shreeyansh Shahi',
-        isAdmin: false,
-        photoUrl: 'https://i.imgur.com/9pNffkj.png',
-        response: null
-      }, {
-        roomId: '001',
-        guestName: 'Akshay Kumar Yadav',
-        isAdmin: false,
-        photoUrl: 'https://i.imgur.com/9pNffkj.png',
-        response: 15
+    this.setIntervalIDs.push(setInterval(() => {
+      if (this.$props.statementID === undefined) {
+        console.log('Undefined statementID')
+        return
       }
-    ]
-
-    response.forEach(e => {
-      this.guests.push({
-        name: e.guestName,
-        response: e.response,
-        photoUrl: e.photoUrl
+      axios({
+        method: 'GET',
+        url: api.BASE_URL + '/guest/guestsResponses/' + this.$props.statementID
       })
-    })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+          this.guests = response.data
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }, 5000))
+  },
+  beforeDestroy () {
+    for (var i = 0; i < this.setIntervalIDs.length; ++i) {
+      clearInterval(this.setIntervalIDs[i])
+    }
   }
 }
 </script>

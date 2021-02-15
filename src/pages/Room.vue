@@ -65,7 +65,9 @@ export default {
 
       statements: [],
       activeStatement: {},
-      history: []
+      history: [],
+
+      setIntervalIDs: []
     }
   },
   methods: {
@@ -136,7 +138,7 @@ export default {
       })
 
     // get statements info
-    setInterval(() => {
+    this.setIntervalIDs.push(setInterval(() => {
       axios({
         method: 'GET',
         url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
@@ -154,7 +156,12 @@ export default {
         .catch((error) => {
           console.error(error)
         })
-    }, 5000)
+    }, 5000))
+  },
+  beforeDestroy () {
+    for (var i = 0; i < this.setIntervalIDs.length; ++i) {
+      clearInterval(this.setIntervalIDs[i])
+    }
   },
   components: {
     VoteHistory, Modal, GuestList

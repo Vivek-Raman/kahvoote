@@ -6,7 +6,7 @@
         <th>Response</th>
       </tr>
       <Guest v-for='guest in this.guests'
-        :guestID='guest.guestId'
+        :responseGuestID='guest.guestId'
         :key='guest.index'
         :name='guest.guestName'
         :response='guest.responseValue'
@@ -28,12 +28,13 @@ export default {
   },
   data () {
     return {
+      setIntervalIDs: [],
       guests: []
     }
   },
   props: ['viewAsAdmin', 'statementID'],
   mounted () {
-    setInterval(() => {
+    this.setIntervalIDs.push(setInterval(() => {
       if (this.$props.statementID === undefined) {
         console.log('Undefined statementID')
         return
@@ -49,7 +50,12 @@ export default {
         .catch((error) => {
           console.error(error)
         })
-    }, 5000)
+    }, 5000))
+  },
+  beforeDestroy () {
+    for (var i = 0; i < this.setIntervalIDs.length; ++i) {
+      clearInterval(this.setIntervalIDs[i])
+    }
   }
 }
 </script>

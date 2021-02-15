@@ -9,7 +9,7 @@
     </td>
     <td>
       <div class="guest-response">
-        <div class="admin-only">{{ this.$props.response }}</div>
+        <div class="response-value">{{ this.$props.response }}</div>
       </div>
     </td>
   </tr>
@@ -20,32 +20,34 @@ import { mapGetters } from 'vuex'
 import AdminIndicator from './AdminIndicator.vue'
 export default {
   components: { AdminIndicator },
-  mounted () {
-    setInterval(() => {
-      console.log('reload')
-      this.reloadResponseStatus()
-    }, 5000)
+  data () {
+    return {
+      setIntervalIDs: []
+    }
+  },
+  updated () {
+    this.reloadResponseStatus()
   },
   methods: {
     reloadResponseStatus () {
+      // handles colour of circle
       if (this.$props.response === 0 || this.$props.response === null) {
         this.$el.getElementsByClassName('guest-response')[0].classList.remove('has-responded')
       } else {
         this.$el.getElementsByClassName('guest-response')[0].classList.add('has-responded')
       }
 
-      if (this.$props.guestID === this.guestID) {
-        this.$el.getElementsByClassName('admin-only')[0].classList.remove('hidden')
-        return
-      }
-
-      if (!this.$props.viewAsAdmin) {
-        this.$el.getElementsByClassName('admin-only')[0].classList.add('hidden')
+      // shows response value if self
+      if (this.$props.responseGuestID === this.guestID) {
+        this.$el.getElementsByClassName('response-value')[0].classList.remove('hidden')
+      } else if (!this.$props.viewAsAdmin) {
+        // hides response values if not admin
+        this.$el.getElementsByClassName('response-value')[0].classList.add('hidden')
       }
     },
     ...mapGetters(['guestID'])
   },
-  props: ['photoUrl', 'guestID', 'name', 'response', 'isAdmin', 'viewAsAdmin']
+  props: ['photoUrl', 'responseGuestID', 'name', 'response', 'isAdmin', 'viewAsAdmin']
 }
 </script>
 

@@ -116,6 +116,12 @@ export default {
     ...mapActions({
       setRoomID: 'setRoomID', setGuestID: 'setGuestID', setIsAdmin: 'setIsAdmin'
     })
+  },
+  mounted () {
+    if (this.$route.params.roomID === undefined) {
+      return
+    }
+    document.getElementById('create-room--roomID').value = this.$route.params.roomID
   }
 }
 </script>

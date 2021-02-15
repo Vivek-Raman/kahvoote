@@ -1,4 +1,3 @@
 export default {
-  BASE_URL: 'http://10.177.68.63:9090',
-  JSONPLACEHOLDER_API_BASE_URL: 'https://jsonplaceholder.typicode.com'
+  BASE_URL: 'http://10.177.68.63:9090'
 }

@@ -3,7 +3,10 @@
     <td class="guest-avatar">
       <img :src='this.$props.photoUrl' alt='-avatar-'>
     </td>
-    <td>{{ this.$props.name }}</td>
+    <td>
+      {{ this.$props.name }}
+      <AdminIndicator :isAdmin="this.$props.isAdmin" />
+    </td>
     <td>
       <div class="guest-response">
         <div class="admin-only">{{ this.$props.response }}</div>
@@ -13,24 +16,36 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import AdminIndicator from './AdminIndicator.vue'
 export default {
+  components: { AdminIndicator },
   mounted () {
-    this.reloadResponseStatus()
+    setInterval(() => {
+      console.log('reload')
+      this.reloadResponseStatus()
+    }, 5000)
   },
   methods: {
     reloadResponseStatus () {
-      if (this.$props.response === -1 || this.$props.response === null) {
+      if (this.$props.response === 0 || this.$props.response === null) {
         this.$el.getElementsByClassName('guest-response')[0].classList.remove('has-responded')
       } else {
         this.$el.getElementsByClassName('guest-response')[0].classList.add('has-responded')
       }
 
+      if (this.$props.guestID === this.guestID) {
+        this.$el.getElementsByClassName('admin-only')[0].classList.remove('hidden')
+        return
+      }
+
       if (!this.$props.viewAsAdmin) {
         this.$el.getElementsByClassName('admin-only')[0].classList.add('hidden')
       }
-    }
+    },
+    ...mapGetters(['guestID'])
   },
-  props: ['photoUrl', 'name', 'response', 'viewAsAdmin']
+  props: ['photoUrl', 'guestID', 'name', 'response', 'isAdmin', 'viewAsAdmin']
 }
 </script>
 
@@ -58,9 +73,11 @@ export default {
     text-anchor: middle;
   }
 
-  img {
+  .guest-avatar > img {
     width: 48px;
     height: 48px;
+    border-radius: 24px;
+    box-shadow: 0px 0px 8px -1px lightgrey;
   }
 
   .hidden {

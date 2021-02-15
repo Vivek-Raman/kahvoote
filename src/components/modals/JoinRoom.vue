@@ -79,7 +79,7 @@ export default {
               return
             }
 
-            // console.log({ url: response.config.url, status: response.status, data: response.data })
+            console.log({ url: response.config.url, status: response.status, data: response.data })
 
             this.setGuestID(response.data.guestId)
             this.setRoomID(response.data.room.roomId)
@@ -101,7 +101,7 @@ export default {
           }
         })
           .then((response) => {
-            // console.log({ url: response.config.url, status: response.status, data: response.data })
+            console.log({ url: response.config.url, status: response.status, data: response.data })
 
             this.setGuestID(response.data.guestId)
             this.setRoomID(response.data.room.roomId)

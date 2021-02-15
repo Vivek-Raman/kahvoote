@@ -15,8 +15,9 @@ export default {
   methods: {
     updateStatement () {
       const newStatement = document.getElementById('update-statement--textarea').value
-      console.log('\'' + newStatement + '\' is the new statement')
-      // TODO: Integration
+      // console.log('\'' + newStatement + '\' is the new statement')
+
+      this.$parent.$parent.updateStatement(newStatement)
     }
   }
 }

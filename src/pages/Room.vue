@@ -2,7 +2,6 @@
   <div id="room">
     <Modal v-if="this.isModalUp" :content="this.modalContent" />
     <div class="flex">
-
       <div id="history" class="box">
         <div class="bigtext">
           Your responses
@@ -33,10 +32,12 @@
         <button @click="setModal('AddResponse')">Add Response</button>
         <!-- TODO: leave room (guest) / end room (admin) -->
 
-        <GuestList roomID='roomID' :viewAsAdmin='this.isAdmin()' />
+        <GuestList
+          :statementID='this.activeStatement.statementId'
+          :viewAsAdmin='this.isAdmin()' />
       </div>
 
-      <div id="chat" class="box">
+      <div id="right-panel" class="box">
         <div class="bigtext">
           Chat
         </div>
@@ -77,6 +78,34 @@ export default {
       this.modalContent = content
       this.isModalUp = true
     },
+    updateStatement (newStatement) {
+      console.log('update statemnet called')
+      axios({
+        method: 'POST',
+        url: api.BASE_URL + '/statement/addStatement',
+        data: {
+          roomId: this.roomID(),
+          statementContent: newStatement
+        }
+      })
+    },
+    submitMyResponse (myResponse) {
+      axios({
+        method: 'POST',
+        url: api.BASE_URL + '/responses/addResponses',
+        data: {
+          guestId: this.guestID(),
+          responseValue: myResponse,
+          statementId: this.activeStatement.statementId
+        }
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data })
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
     ...mapGetters([
       'roomID',
       'guestID',
@@ -85,9 +114,12 @@ export default {
   },
   mounted () {
     // TODO: redirect if store values don't exist
-    console.log({ roomID: this.roomID(), guestID: this.guestID(), isAdmin: this.isAdmin() })
+    if (this.roomID() === '' || this.guestID() === '') {
+      console.error('Invalid state: Join through Home page')
+      this.$router.push('/?err=invalidstate')
+      return
+    }
 
-    // TODO: Integration
     // get room info
     axios({
       method: 'GET',
@@ -104,66 +136,25 @@ export default {
       })
 
     // get statements info
-    axios({
-      method: 'GET',
-      url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
-    })
-      .then((response) => {
-        console.log({ url: response.config.url, status: response.status, data: response.data })
-
-        this.activeStatement = response.data[0]
-        this.history = response.data.slice(1)
+    setInterval(() => {
+      axios({
+        method: 'GET',
+        url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
       })
-      .catch((error) => {
-        console.error(error)
-      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data })
 
-    const response = {
-      status: 'OK',
-      data: {
-        room: {
-          roomID: 123,
-          roomName: 'Travel Team - Sprint 420',
-          password: 's3cret',
-          isActive: true
-        },
-        activeStatement: {
-          content: 'Ticket 3235: Discard all REST APIs and implement carrier pigeon'
-        },
-        history: [
-          {
-            statement: {
-              statementID: 41,
-              statementContent: 'Ticket 3234: Find a pigeon training school',
-              timestamp: 'forever',
-              roomID: 123
-            },
-            myResponse: {
-              responseID: 161,
-              statementID: 41,
-              guestID: 1,
-              responseValue: 18
-            }
-          }, {
-            statement: {
-              statementID: 40,
-              statementContent: 'Ticket 3233: Plant trees',
-              timestamp: 'a while ago',
-              roomID: 123
-            },
-            myResponse: {
-              responseID: 160,
-              statementID: 41,
-              guestID: 1,
-              responseValue: 12
-            }
+          if (response.data.length <= 0) {
+            return
           }
-        ]
-      }
-    }
 
-    this.activeStatement = response.data.activeStatement.content
-    // this.history = response.data.history
+          this.activeStatement = response.data[0]
+          this.history = response.data.slice(1)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }, 5000)
   },
   components: {
     VoteHistory, Modal, GuestList

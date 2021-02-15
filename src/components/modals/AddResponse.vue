@@ -29,9 +29,7 @@ export default {
   methods: {
     submitResponse () {
       const myResponse = document.getElementById('add-response--response').value
-      console.log('I respond with ' + myResponse)
-
-      // TODO: Integration
+      this.$parent.$parent.submitMyResponse(myResponse)
     }
   }
 }

@@ -39,7 +39,10 @@
 
       <div id="right-panel" class="box">
         <div class="bigtext">
-          Chat
+          Stats
+        </div>
+        <div id="room--stats">
+          stats go here
         </div>
       </div>
     </div>
@@ -57,8 +60,8 @@ import api from '../config/api.js'
 export default {
   data () {
     return {
-      isModalUp: false,
-      modalContent: '',
+      isModalUp: true,
+      modalContent: 'UpdateStatement',
 
       roomName: '',
       roomDescription: '',
@@ -157,6 +160,21 @@ export default {
 
           this.activeStatement = response.data[0]
           this.history = response.data.slice(1)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }, 5000))
+
+    // get statement stats
+    this.setIntervalIDs.push(setInterval(() => {
+      axios({
+        method: 'GET',
+        url: api.BASE_URL + '/responses/getStats/' + this.activeStatement.statementId
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+          document.getElementById('room--stats').innerText = JSON.stringify(response.data)
         })
         .catch((error) => {
           console.error(error)

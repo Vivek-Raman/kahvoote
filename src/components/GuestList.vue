@@ -44,7 +44,7 @@ export default {
         url: api.BASE_URL + '/guest/guestsResponses/' + this.$props.statementID
       })
         .then((response) => {
-          console.log({ url: response.config.url, status: response.status, data: response.data })
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
           this.guests = response.data
         })
         .catch((error) => {

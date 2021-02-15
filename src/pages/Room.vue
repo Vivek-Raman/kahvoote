@@ -81,7 +81,6 @@ export default {
       this.isModalUp = true
     },
     updateStatement (newStatement) {
-      console.log('update statemnet called')
       axios({
         method: 'POST',
         url: api.BASE_URL + '/statement/addStatement',
@@ -90,6 +89,12 @@ export default {
           statementContent: newStatement
         }
       })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     },
     submitMyResponse (myResponse) {
       axios({
@@ -102,7 +107,7 @@ export default {
         }
       })
         .then((response) => {
-          console.log({ url: response.config.url, status: response.status, data: response.data })
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
         })
         .catch((error) => {
           console.error(error)
@@ -128,7 +133,7 @@ export default {
       url: api.BASE_URL + '/room/getRoom/' + this.roomID()
     })
       .then((response) => {
-        console.log({ url: response.config.url, status: response.status, data: response.data })
+        console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
 
         this.roomName = response.data.roomName
         this.roomDescription = response.data.roomDescription
@@ -144,7 +149,7 @@ export default {
         url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
       })
         .then((response) => {
-          console.log({ url: response.config.url, status: response.status, data: response.data })
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
 
           if (response.data.length <= 0) {
             return

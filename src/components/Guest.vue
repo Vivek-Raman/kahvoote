@@ -38,7 +38,7 @@ export default {
       }
 
       // shows response value if self
-      if (this.$props.responseGuestID === this.guestID) {
+      if (this.$props.isMyResponse) {
         this.$el.getElementsByClassName('response-value')[0].classList.remove('hidden')
       } else if (!this.$props.viewAsAdmin) {
         // hides response values if not admin

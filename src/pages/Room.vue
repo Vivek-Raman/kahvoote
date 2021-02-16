@@ -160,7 +160,11 @@ export default {
       })
         .then((response) => {
           console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
-          document.getElementById('room--stats').innerText = JSON.stringify(response.data)
+          let stats = ''
+          for (var stat in response.data) {
+            stats += stat + ': ' + response.data[stat] + '\n'
+          }
+          document.getElementById('room--stats').innerText = stats
         })
         .catch((error) => {
           console.error(error)

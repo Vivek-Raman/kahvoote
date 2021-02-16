@@ -17,10 +17,10 @@
         <div class="bigtext">Welcome to Kahvoote!</div>
         <div class="sub-text">Your smart voting portal, made by Akshay, Shreeyansh, and Vivek</div>
         <button class="button" id="button-create-room" @click="setModal('CreateRoom')">
-          Create Room
+          <div class="bigtext">Create Room</div>
         </button>
         <button class="button" id="button-join-room" @click="setModal('JoinRoom')">
-          Join Room
+          <div class="bigtext">Join Room</div>
         </button>
       </div>
     </div>

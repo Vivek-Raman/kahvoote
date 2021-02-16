@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import AdminIndicator from './AdminIndicator.vue'
 export default {
   components: { AdminIndicator },
@@ -37,17 +36,18 @@ export default {
         this.$el.getElementsByClassName('guest-response')[0].classList.add('has-responded')
       }
 
-      // shows response value if self
-      if (this.$props.isMyResponse) {
-        this.$el.getElementsByClassName('response-value')[0].classList.remove('hidden')
-      } else if (!this.$props.viewAsAdmin) {
+      if (!this.$props.viewAsAdmin === false) {
         // hides response values if not admin
         this.$el.getElementsByClassName('response-value')[0].classList.add('hidden')
       }
-    },
-    ...mapGetters(['guestID'])
+
+      // shows response value if self
+      if (this.$props.isMyResponse === true) {
+        this.$el.getElementsByClassName('response-value')[0].classList.remove('hidden')
+      }
+    }
   },
-  props: ['photoUrl', 'responseGuestID', 'name', 'response', 'isAdmin', 'viewAsAdmin']
+  props: ['photoUrl', 'isMyResponse', 'name', 'response', 'isAdmin', 'viewAsAdmin']
 }
 </script>
 

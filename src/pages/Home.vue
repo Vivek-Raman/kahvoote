@@ -16,10 +16,10 @@
       <div class="actions">
         <div class="bigtext">Welcome to Kahvoote!</div>
         <div class="sub-text">Your smart voting portal, made by Akshay, Shreeyansh, and Vivek</div>
-        <button id="button-create-room" @click="setModal('CreateRoom')">
+        <button class="button" id="button-create-room" @click="setModal('CreateRoom')">
           Create Room
         </button>
-        <button id="button-join-room" @click="setModal('JoinRoom')">
+        <button class="button" id="button-join-room" @click="setModal('JoinRoom')">
           Join Room
         </button>
       </div>
@@ -82,6 +82,9 @@ export default {
   .split-page > div {
     margin: auto 0px;
     width: 45vw;
+  }
+
+  .split-page > div:first-child {
     border-radius: 16px;
     box-shadow: 0px 0px 8px -1px lightgrey;
   }
@@ -105,33 +108,20 @@ export default {
     margin: 4px;
   }
 
-  // .button {
-  //   border: 1px solid black;
-  //   padding: 4px;
-  //   cursor: pointer;
-  // }
+  .button {
+    border: 1px solid black;
+    margin: 8px;
+    width: 200px;
+    padding: 16px 0px;
+    border-radius: 16px;
+    cursor: pointer;
+  }
 
   #button-create-room {
     background: #BDE0FE;
-    max-height: 69px;
-    max-width: 502px;
-    left: 817px;
-    top: 358px;
-    border-radius: 10px;
-    padding: 10px 15px;
-    margin: 10px;
-    width: 300px;
   }
 
   #button-join-room {
     background-color: #A8DADC;
-    max-height: 69px;
-    max-width: 502px;
-    left: 817px;
-    top: 358px;
-    border-radius: 10px;
-    padding: 10px 15px;
-    margin: 10px;
-    width: 300px;
   }
 </style>

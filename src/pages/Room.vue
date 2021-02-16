@@ -29,11 +29,10 @@
           <div class="statement">
             {{ this.activeStatement.statementContent }}
           </div>
-          <button v-if="this.isAdmin()" @click="setModal('UpdateStatement')">Update Statement</button>
         </div>
-
+        <button v-if="this.isAdmin()" @click="setModal('UpdateStatement')">Update Statement</button>
         <button @click="setModal('AddResponse')">Add Response</button>
-        <!-- TODO: leave room (guest) / end room (admin) -->
+        <button v-if="this.isAdmin()" @click="endRoom()">End Room</button>
 
         <GuestList
           :statementID='this.activeStatement.statementId'
@@ -63,8 +62,8 @@ import api from '../config/api.js'
 export default {
   data () {
     return {
-      isModalUp: true,
-      modalContent: 'UpdateStatement',
+      isModalUp: false,
+      modalContent: '',
 
       roomName: '',
       roomDescription: '',
@@ -119,6 +118,54 @@ export default {
           console.error(error)
         })
     },
+    endRoom () {
+      axios({
+        method: 'GET',
+        url: api.BASE_URL + '/room/deleteRoom/' + this.roomID()
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+
+      this.$router.push('/')
+    },
+    getStatementsInfo () {
+      axios({
+        method: 'GET',
+        url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+
+          if (response.data.length <= 0) {
+            return
+          }
+
+          this.activeStatement = response.data[0]
+          this.history = response.data.slice(1)
+
+          this.getStatementStats()
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    getStatementStats () {
+      axios({
+        method: 'GET',
+        url: api.BASE_URL + '/responses/getStats/' + this.activeStatement.statementId
+      })
+        .then((response) => {
+          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
+          document.getElementById('room--stats').innerText = JSON.stringify(response.data)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
     ...mapGetters([
       'roomID',
       'guestID',
@@ -126,6 +173,14 @@ export default {
     ])
   },
   mounted () {
+    if (this.isAdmin === true) {
+      this.isModalUp = true
+      this.modalContent = 'UpdateStatement'
+    } else {
+      this.isModalUp = false
+      this.modalContent = ''
+    }
+
     // TODO: redirect if store values don't exist
     if (this.roomID() === '' || this.guestID() === '') {
       console.error('Invalid state: Join through Home page')
@@ -149,40 +204,10 @@ export default {
       })
 
     // get statements info
-    this.setIntervalIDs.push(setInterval(() => {
-      axios({
-        method: 'GET',
-        url: api.BASE_URL + '/statement/displayStatement/' + this.roomID()
-      })
-        .then((response) => {
-          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
-
-          if (response.data.length <= 0) {
-            return
-          }
-
-          this.activeStatement = response.data[0]
-          this.history = response.data.slice(1)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    }, 5000))
+    this.setIntervalIDs.push(setInterval(() => this.getStatementsInfo(), 5000))
 
     // get statement stats
-    this.setIntervalIDs.push(setInterval(() => {
-      axios({
-        method: 'GET',
-        url: api.BASE_URL + '/responses/getStats/' + this.activeStatement.statementId
-      })
-        .then((response) => {
-          console.log({ url: response.config.url, status: response.status, data: response.data }) // TODO: remove axios log
-          document.getElementById('room--stats').innerText = JSON.stringify(response.data)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    }, 5000))
+    this.setIntervalIDs.push(setInterval(() => this.getStatementStats(), 5000))
   },
   beforeDestroy () {
     for (var i = 0; i < this.setIntervalIDs.length; ++i) {
@@ -225,5 +250,9 @@ export default {
   #voting-container {
     flex-grow: 1;
     min-width: 350px;
+  }
+
+  #voting-container > button {
+    margin: 8px;
   }
 </style>

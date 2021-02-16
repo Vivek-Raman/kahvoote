@@ -6,7 +6,7 @@
         <th>Response</th>
       </tr>
       <Guest v-for='guest in this.guests'
-        :responseGuestID='guest.guestId'
+        :isMyResponse='guest.guestId === guestID()'
         :key='guest.index'
         :name='guest.guestName'
         :response='guest.responseValue'
@@ -21,6 +21,7 @@
 import axios from 'axios'
 import Guest from './Guest.vue'
 import api from '../config/api'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -31,6 +32,9 @@ export default {
       setIntervalIDs: [],
       guests: []
     }
+  },
+  methods: {
+    ...mapGetters(['guestID'])
   },
   props: ['viewAsAdmin', 'statementID'],
   mounted () {

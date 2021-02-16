@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav>
+    <nav class="navbar">
       <ul>
         <router-link to="/" tag="li"><header>Kahvoote</header></router-link>
         <router-link to="/" tag="li">Home</router-link>
@@ -42,7 +42,7 @@ nav > ul {
   list-style: none;
   padding-inline-start: 0px;
   margin: auto;
-  background-color: aliceblue;
+  background-color:#90E0EF;
   display: flex;
 }
 
@@ -56,4 +56,5 @@ nav > ul > li:hover {
   transition-delay: 50ms;
   transition-duration: 150ms;
 }
+
 </style>

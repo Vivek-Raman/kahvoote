@@ -17,6 +17,9 @@
 
       <div id="voting-container" class="box">
         <div class="bigtext">
+          <label class="statement">
+            Room Name:
+          </label>
           {{ this.roomName }}
         </div>
         <div>
